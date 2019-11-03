@@ -168,9 +168,6 @@ export default class VueAwesomeSlider extends Vue {
   }
 
   private moveLeft(movingKind: TMovingKind = 'button') {
-    const newPosition = this.translate.position.x - this.getStepValue(movingKind);
-    const unsignedPos = newPosition ? newPosition * (-1) : newPosition;
-
     /* actually idk how to explain this :(( */
     const boundary = -this.translate.position.x + this.contentElement.offsetWidth;
     if (this.contentElement.scrollWidth < boundary) {
