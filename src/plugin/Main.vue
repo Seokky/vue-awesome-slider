@@ -13,11 +13,7 @@
       ref="vueas-content"
       class="vueas-content"
     >
-      <div class="vueas-slide">1</div>
-      <div class="vueas-slide">2</div>
-      <div class="vueas-slide">3</div>
-      <div class="vueas-slide">4</div>
-      <div class="vueas-slide">5</div>
+      <slot />
     </div>
 
     <div
@@ -66,6 +62,9 @@ import { TMovingKind } from '@/plugin/types/MovingKind';
 export default class VueAwesomeSlider extends Vue {
   @Prop({ type: Boolean, default: true })
   controls!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  cycling!: boolean
 
   @Prop({ type: Number, default: 1 })
   showingSlidesCount!: number;
@@ -206,19 +205,6 @@ export default class VueAwesomeSlider extends Vue {
 .vueas-content {
   display: flex;
   justify-content: flex-start;
-}
-
-.vueas-slide {
-  border-radius: 2px;
-  box-shadow: 0 0 6px rgba(black, 0.3);
-  margin: 0 5px;
-  padding: 10px;
-  min-height: 100px;
-  min-width: 240px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
 }
 
 .vueas-controls-wrapper {

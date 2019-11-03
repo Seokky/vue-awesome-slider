@@ -1,18 +1,22 @@
 <template>
   <div id="app">
-    <VueAwesomeSlider
-      class="slider"
-    />
+    <VueAwesomeSlider class="slider">
+      <Slide>1</Slide>
+      <Slide>2</Slide>
+      <Slide>3</Slide>
+      <Slide>4</Slide>
+      <Slide>5</Slide>
+    </VueAwesomeSlider>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import VueAwesomeSlider from '@/plugin/Main.vue';
+import { VueAwesomeSlider, Slide } from '@/plugin/index';
 
 @Component({
   components: {
-    VueAwesomeSlider,
+    VueAwesomeSlider, Slide,
   },
 })
 export default class App extends Vue {}
