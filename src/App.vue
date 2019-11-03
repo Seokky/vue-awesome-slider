@@ -1,29 +1,33 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <VueAwesomeSlider
+      class="slider"
+      :controls="false"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from './components/HelloWorld.vue';
+import VueAwesomeSlider from '@/plugin/Main.vue';
 
 @Component({
   components: {
-    HelloWorld,
+    VueAwesomeSlider,
   },
 })
 export default class App extends Vue {}
 </script>
 
 <style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+body,
+html {
+  margin: 0;
+}
+
+.slider {
+  margin: 0 auto;
+  margin-top: 100px;
+  max-width: 700px;
 }
 </style>
