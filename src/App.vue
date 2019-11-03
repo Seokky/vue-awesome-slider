@@ -2,7 +2,6 @@
   <div id="app">
     <VueAwesomeSlider
       class="slider"
-      :controls="false"
     />
   </div>
 </template>

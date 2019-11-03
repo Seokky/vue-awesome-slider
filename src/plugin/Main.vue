@@ -1,11 +1,17 @@
 <template>
-  <section class="vueas-wrapper">
+  <section
+    class="vueas-wrapper"
+    @mousedown.capture="startDrag"
+    @touchstart.capture="startDrag"
+    @touchend.capture="stopDrag"
+    @touchcancel.capture="stopDrag"
+    @touchleave="stopDrag"
+    @mouseleave="stopDrag"
+    @mouseup="stopDrag"
+  >
     <div
       ref="vueas-content"
       class="vueas-content"
-      @mousedown.capture="startDrag"
-      @mouseleave="stopDrag"
-      @mouseup="stopDrag"
     >
       <div class="vueas-slide">1</div>
       <div class="vueas-slide">2</div>
@@ -56,6 +62,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
+import { TMovingKind } from '@/plugin/types/MovingKind';
 
 @Component({})
 export default class VueAwesomeSlider extends Vue {
@@ -82,12 +89,18 @@ export default class VueAwesomeSlider extends Vue {
     step: { x: 5, y: 5 },
   }
 
+  touch = {
+    pos: { x: 0, y: 0 },
+    step: { x: 20, y: 20 },
+  }
+
   get contentElement() {
     return this.$refs['vueas-content'] as HTMLElement;
   }
 
   mounted() {
     document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('touchmove', this.onTouchMove);
   }
 
   private startDrag() {
@@ -96,14 +109,37 @@ export default class VueAwesomeSlider extends Vue {
 
   private stopDrag() {
     this.drag.active = false;
+    this.resetTouchPositions();
+  }
+
+  private resetTouchPositions() {
+    this.touch.pos.x = 0;
+    this.touch.pos.y = 0;
+  }
+
+  private onTouchMove(e: TouchEvent) {
+    const { pageX } = e.touches[0];
+
+    if (!this.touch.pos.x) {
+      this.touch.pos.x = pageX;
+      return;
+    }
+
+    if (pageX > this.touch.pos.x) {
+      this.moveRight('touch');
+    } else if (pageX < this.touch.pos.x) {
+      this.moveLeft('touch');
+    }
+
+    this.touch.pos.x = pageX;
   }
 
   private onMouseMove(e: MouseEvent) {
     if (this.drag.active) {
-      if (e.movementX > 0) {
-        this.moveLeft(true);
+      if (e.movementX < 0) {
+        this.moveLeft('drag');
       } else {
-        this.moveRight(true);
+        this.moveRight('drag');
       }
     }
   }
@@ -120,17 +156,26 @@ export default class VueAwesomeSlider extends Vue {
     clearInterval(this.longPress.timer);
   }
 
-  private moveLeft(isDrag = false) {
-    const step = isDrag ? this.drag.step.x : this.translate.step.x;
+  private getStepValue(movingKind: TMovingKind): number {
+    switch (movingKind) {
+      case 'button':
+        return this.translate.step.x;
+      case 'drag':
+        return this.drag.step.x;
+      case 'touch':
+        return this.touch.step.x;
+      default:
+        return 0;
+    }
+  }
 
-    this.translate.position.x -= step;
+  private moveLeft(movingKind: TMovingKind = 'button') {
+    this.translate.position.x -= this.getStepValue(movingKind);
     this.setActualTranslate();
   }
 
-  private moveRight(isDrag = false) {
-    const step = isDrag ? this.drag.step.x : this.translate.step.x;
-
-    this.translate.position.x += step;
+  private moveRight(movingKind: TMovingKind = 'button') {
+    this.translate.position.x += this.getStepValue(movingKind);
     this.setActualTranslate();
   }
 
@@ -150,7 +195,7 @@ export default class VueAwesomeSlider extends Vue {
 
 .vueas-content {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .vueas-slide {
