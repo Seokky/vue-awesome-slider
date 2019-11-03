@@ -26,7 +26,6 @@
     >
       <div
         class="vueas-left-control"
-        @click="moveLeft"
         @mousedown="onLeftControlClicked"
         @touchstart="onLeftControlClicked"
         @mouseup="stopLongPress"
@@ -42,7 +41,6 @@
       </div>
       <div
         class="vueas-right-control"
-        @click="moveRight"
         @mousedown="onRightControlClicked"
         @touchstart="onRightControlClicked"
         @mouseup="stopLongPress"
@@ -143,11 +141,11 @@ export default class VueAwesomeSlider extends Vue {
   }
 
   private onLeftControlClicked() {
-    this.longPress.timer = setInterval(this.moveLeft, this.longPress.interval);
+    this.longPress.timer = setInterval(this.moveRight, this.longPress.interval);
   }
 
   private onRightControlClicked() {
-    this.longPress.timer = setInterval(this.moveRight, this.longPress.interval);
+    this.longPress.timer = setInterval(this.moveLeft, this.longPress.interval);
   }
 
   private stopLongPress() {
