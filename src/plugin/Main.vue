@@ -78,10 +78,8 @@ export default class VueAwesomeSlider extends Vue {
   }
 
   longPress = {
-    active: false,
     timer: 0,
     interval: 50,
-    delay: 300,
   }
 
   drag = {
@@ -135,12 +133,12 @@ export default class VueAwesomeSlider extends Vue {
   }
 
   private onMouseMove(e: MouseEvent) {
-    if (this.drag.active) {
-      if (e.movementX < 0) {
-        this.moveLeft('drag');
-      } else {
-        this.moveRight('drag');
-      }
+    if (!this.drag.active) return;
+
+    if (e.movementX <= 0) {
+      this.moveLeft('drag');
+    } else {
+      this.moveRight('drag');
     }
   }
 
@@ -170,11 +168,28 @@ export default class VueAwesomeSlider extends Vue {
   }
 
   private moveLeft(movingKind: TMovingKind = 'button') {
+    const newPosition = this.translate.position.x - this.getStepValue(movingKind);
+    const unsignedPos = newPosition ? newPosition * (-1) : newPosition;
+
+    /* actually idk how to explain this :(( */
+    const boundary = -this.translate.position.x + this.contentElement.offsetWidth;
+    if (this.contentElement.scrollWidth < boundary) {
+      return;
+    }
+
     this.translate.position.x -= this.getStepValue(movingKind);
     this.setActualTranslate();
   }
 
   private moveRight(movingKind: TMovingKind = 'button') {
+    const newPosition = this.translate.position.x + this.getStepValue(movingKind);
+
+    if (newPosition > 0) {
+      this.translate.position.x = 0;
+      this.setActualTranslate();
+      return;
+    }
+
     this.translate.position.x += this.getStepValue(movingKind);
     this.setActualTranslate();
   }
@@ -226,5 +241,11 @@ export default class VueAwesomeSlider extends Vue {
   button {
     width: 100%;
   }
+}
+</style>
+
+<style scoped>
+* {
+  box-sizing: border-box;
 }
 </style>
